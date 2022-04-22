@@ -4,16 +4,36 @@ const addTaskInput = document.getElementById('add');
 const tasksCounter = document.getElementById('task-counter');
 
 console.log('Working');
+
+function fetchToDo()
+{
+    fetch("https://jsonplaceholder.typicode.com/todos") //it returns a promise
+     .then(function(response)
+    {
+        console.log(response);
+        return response.json();
+    }).then(function(data)
+    { tasks=data.slice(0,10);
+        renderList();
+        console.log(data);
+    })
+    .catch(function(error)
+    {
+        console.log('error',error);
+    })
+}
+
+
 function addTaskToDOM(task)
 {  const li=document.createElement('li');
-li.innerHTML=
-`
-<input type = "checkbox" id="${task.id}" ${task.done ? 'checked': ''} class="custom-checkbox">
-<label for="${task.id}">${task.text}</label>
-<img src="trash.png" class="delete" data-id="${task.id}"/>
+   li.innerHTML=
+                `
+                 <input type = "checkbox" id="${task.id}" ${task.completed ? 'checked': ''} class="custom-checkbox">
+                <label for="${task.id}">${task.title}</label>
+                <img src="trash.png" class="delete" data-id="${task.id}"/>
 
-`;
-taskList.append(li);
+                `;
+    taskList.append(li);
 }
 
 function renderList () {
@@ -30,12 +50,12 @@ function toggleTsk(taskId)
 {
     const task=tasks.filter(function(task)
     { console.log(tasks.id);
-        return task.id===taskId;
+        return task.id=== Number(taskId);
     })
     if(task.length>0)
     {
         const currentTask=task[0];
-        currentTask.done=!currentTask.done;
+        currentTask.completed=!currentTask.completed;
         renderList();
         showNotification("Toggled Successfully");
         return;
@@ -47,7 +67,7 @@ function deleteTask (taskId) {
     const newtasks=tasks.filter(function(task)
     { console.log(tasks);
       
-        return task.id!==taskId;
+        return task.id!==Number(taskId);
     })
     // let newtasks=[];
     // for(let i=0;i<tasks.length;i++)
@@ -94,9 +114,9 @@ function handleInputKeypress(e)
         return;
     }
     const task={
-        text,
-        id:Date.now().toString(),
-        done:false
+       title: text,
+        id:Date.now(),
+        completed:false
     }
     e.target.value='';
     addTask(task);
@@ -126,9 +146,9 @@ function handleClickListener(e)
 
 }
 function initializeApp()
-{
+{   fetchToDo();
     addTaskInput.addEventListener("keyup",handleInputKeypress);
-document.addEventListener('click',handleClickListener);
+    document.addEventListener('click',handleClickListener);
 
 }
 initializeApp();
