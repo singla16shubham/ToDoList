@@ -5,22 +5,33 @@ const tasksCounter = document.getElementById('task-counter');
 
 console.log('Working');
 
-function fetchToDo()
+async function fetchToDo()
 {
-    fetch("https://jsonplaceholder.typicode.com/todos") //it returns a promise
-     .then(function(response)
-    {
-        console.log(response);
-        return response.json();
-    }).then(function(data)
-    { tasks=data.slice(0,10);
+    // fetch("https://jsonplaceholder.typicode.com/todos") //it returns a promise
+    //  .then(function(response)
+    // {
+    //     console.log(response);
+    //     return response.json();
+    // }).then(function(data)
+    // { tasks=data.slice(0,10);
+    //     renderList();
+    //     console.log(data);
+    // })
+    // .catch(function(error)
+    // {
+    //     console.log('error',error);
+    // })
+    try{
+        const response= await fetch("https://jsonplaceholder.typicode.com/todos");
+        const data= await response.json();
+        tasks=data.slice(0,10);
         renderList();
-        console.log(data);
-    })
-    .catch(function(error)
-    {
+    }
+    catch(error){
         console.log('error',error);
-    })
+
+    }
+   
 }
 
 
@@ -91,12 +102,43 @@ function deleteTask (taskId) {
 function addTask (task) {
     if(task)
     {
-    tasks.push(task);
+      // We are doing it so that it updates local state and API server state 
+    //   Although it will not work at this time but we can do it in future.
+
+    // fetch("https://jsonplaceholder.typicode.com/todos",{
+    //     method:'POST',
+    //     headers:{
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body:JSON.stringify(task),
+    // }) 
+
+    //  .then(function(response)
+    // {
+    //     // console.log(response);
+    //     return response.json();
+    // }).then(function(data)
+    // { 
+        
+    //     console.log(data);
+    //     tasks.push(task);
+    //     renderList();
+    //     showNotification("Task added Successfully");
+    //     // return;
+    // })
+    // .catch(function(error)
+    // {
+    //     console.log('error',error);
+    // })
+      tasks.push(task);
     renderList();
     showNotification("Task added Successfully");
     return;
+  
     }
+    
     showNotification("Task cannot be added");
+  
 }
 
 function showNotification(text) {
